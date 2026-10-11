@@ -12,6 +12,7 @@ import { BestTimeToGoOut } from './components/BestTimeToGoOut';
 import { AirPurifierSim } from './components/AirPurifierSim';
 import { NotificationCenter, FloatingToast } from './components/NotificationCenter';
 import { AwsDeployModal } from './components/AwsDeployModal';
+import { GuidedTour } from './components/GuidedTour';
 import { Footer } from './components/Footer';
 import { Loader2, RefreshCw } from 'lucide-react';
 
@@ -192,6 +193,13 @@ export default function App() {
     setCurrentLocation(gpsLoc);
   };
 
+  const selectLocationById = (id) => {
+    const loc = locations.find((l) => l.id === id);
+    if (loc) {
+      setCurrentLocation(loc);
+    }
+  };
+
   // Determine current weather parameters for theme resolution
   const currentIsDay = weatherData?.current?.is_day ?? 1;
   const currentWeatherCode = weatherData?.current?.weather_code ?? 0;
@@ -323,6 +331,16 @@ export default function App() {
         isOpen={isAwsModalOpen}
         onClose={() => setIsAwsModalOpen(false)}
         themeConfig={themeConfig}
+      />
+
+      {/* Automated Guided Demo with Voice & Subtitles */}
+      <GuidedTour
+        themeConfig={themeConfig}
+        setThemeOverride={setThemeOverride}
+        setHealthProfile={setHealthProfile}
+        selectLocationById={selectLocationById}
+        triggerNotification={triggerNotification}
+        setIsAwsModalOpen={setIsAwsModalOpen}
       />
 
     </div>

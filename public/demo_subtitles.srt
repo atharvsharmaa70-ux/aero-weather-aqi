@@ -1,0 +1,43 @@
+1
+00:00:00,500 --> 00:00:05,800
+Welcome to AeroWeather, a smart air quality and weather sentinel deployed on AWS Amplify.
+
+2
+00:00:06,000 --> 00:00:12,800
+First, our dynamic theme adapts to weather and daylight. In day mode, the interface displays a luminous light blue sky gradient.
+
+3
+00:00:13,000 --> 00:00:18,200
+Switching to night mode transitions into a deep midnight dark blue palette.
+
+4
+00:00:18,400 --> 00:00:24,800
+Next, our live telemetry pulls real-time atmospheric data via the free Open-Meteo API with zero API keys.
+
+5
+00:00:25,000 --> 00:00:32,800
+Selecting Home loads New Delhi, which immediately activates our seasonal crop burning and stubble smoke alert for October and November.
+
+6
+00:00:33,000 --> 00:00:38,500
+Selecting School switches to San Francisco with clean coastal air.
+
+7
+00:00:38,700 --> 00:00:47,500
+Our health sensitivity setting lets users personalize thresholds. In asthma mode, mask and indoor exercise alerts trigger earlier for respiratory safety.
+
+8
+00:00:47,700 --> 00:00:56,500
+Below, our predictive forecast analyzes the next 24 hours to find the optimal clean air window to go outside versus peak pollution hours.
+
+9
+00:00:56,700 --> 00:01:05,500
+Our simulated connected air purifier features real-time indoor telemetry. When turned on, the simulated indoor PM2.5 drops down to clean HEPA levels.
+
+10
+00:01:05,700 --> 00:01:11,500
+Finally, in-app notification cards alert users to sudden spikes.
+
+11
+00:01:11,700 --> 00:01:18,000
+The entire application is production ready and hosted live on AWS Amplify Hosting.
