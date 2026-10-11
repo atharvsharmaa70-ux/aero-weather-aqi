@@ -1,138 +1,91 @@
-# 🌤️ AeroWeather — Dynamic Weather & AQI Sentinel
+# 🌤️ AeroWeather: Live Air Quality & Smoke Alerts
 
-> **A real-time atmospheric and air quality intelligence app** featuring dynamic day/night theme adaptation (Light Blue by Day, Dark Blue by Night), predictive outdoor activity planning, crop burning detection, and simulated smart home integrations.
->
-> Built with zero API keys using **Open-Meteo Air Quality & Weather API** and engineered for 1-click deployment on **AWS Amplify Hosting**.
+**Team AeroWeathers** | Environmental Hacks 2026 (WeMakeDevs x AWS)
 
----
-
-## 🚀 Live Demo & AWS Qualification
-
-- **AWS Qualification Rule:** *“Use an AWS open source tool or be deployed on AWS.”*
-- **Deployment Target:** [AWS Amplify Hosting](https://aws.amazon.com/amplify/hosting/)
-- **Build Specification:** Pre-configured [`amplify.yml`](./amplify.yml) in root directory for zero-config CI/CD.
-- **Simulated AWS Integrations:**
-  - **AWS IoT Core (Simulated MQTT):** Connected air purifier telemetry with dynamic indoor PM2.5 monitoring.
-  - **AWS SNS / Web Push (Simulated):** In-app alert notification pipeline for sudden pollution spikes.
+**Live app:** https://main.d1nkjnb4jf6v1s.amplifyapp.com/
 
 ---
 
-## 🌟 Feature Breakdown
+## The problem
 
-### 🎨 1. Dynamic Weather & Day/Night Theme
-- **Daytime:** Luminous **Light Blue** palette (`from-sky-200 via-sky-100 to-blue-200`), frosted glass cards, and sunshine accents.
-- **Nighttime:** Deep Midnight **Dark Blue** palette (`from-slate-950 via-slate-900 to-blue-950`), dark glassy cards, and moonlit cyan accents.
-- **Condition Tuning:** Adapts to rain (cool slate blue), fog, and heavy smog.
-- **Demo Switcher:** Toggle between **Auto (matches live sun/moon)**, **Force Day (Light Blue)**, and **Force Night (Dark Blue)** anytime!
+Every October and November, smoke from stubble burning and winter inversion layers push Delhi-NCR's air quality into the "Unhealthy" and "Hazardous" range. Most people only check an AQI number, if they check at all, and don't know what to *do* about it: whether to open windows, wear a mask, exercise outside, or when the cleanest part of the day is.
 
-### 📡 2. Real Live Telemetry (Open-Meteo API — No Keys Needed)
-- **Live AQI:** Real-time US AQI (0–500 scale) with EPA standard categories:
-  - 🌿 *Good (0–50)* · 🌤️ *Moderate (51–100)* · ⚠️ *Unhealthy for Sensitive Groups (101–150)* · 🚨 *Unhealthy (151–200)* · 🛑 *Very Unhealthy (201–300)* · ☣️ *Hazardous (301+)*
-- **Detailed Pollutants:** PM2.5 (fine combustion soot), PM10 (coarse dust), European AQI (EAQI), Ozone ($O_3$), Nitrogen Dioxide ($NO_2$), and Carbon Monoxide ($CO$).
-- **Live Weather Metrics:** Temperature (°C / °F toggle), Feels Like, Humidity %, Wind Speed & Angle, and Precipitation.
+## Our solution
 
-### 📍 3. Saved Locations & Global Search
-- **Quick Preset Pills:**
-  - 🏠 **Home:** New Delhi (displays active autumn crop burning smoke telemetry)
-  - 🏢 **Office:** London (maritime climate & European AQI)
-  - 🎓 **School:** San Francisco (Pacific coastal air quality)
-- **Global Search:** Type any city in the world with instant geocoding autocomplete.
-- **GPS Locator:** 1-tap `navigator.geolocation` button for device location.
-- **Persistent:** Saved directly to `localStorage`.
+AeroWeather turns raw air-quality data into plain-language actions, and sends an email alert when air quality turns bad, so people don't have to keep checking.
 
-### ⏱️ 4. 24-Hour Forecast & "Best Time To Go Out"
-- **Hourly AQI Progression Bar Chart:** Color-coded EPA bars for the upcoming 24 hours.
-- **Optimal Outdoor Air Window:** Detects the cleanest window (e.g. `06:00 AM – 09:00 AM (AQI 42)`).
-- **Peak Risk Window:** Warns against high pollution intervals to prevent deep-lung particulate exposure during cardio or sports.
+## Features
 
-### 🛡️ 5. Four Actionable Rule-Based Alerts
-- 🪟 **Window Status:** Safe to ventilate vs keep sealed.
-- 😷 **Mask Recommendation:** None vs Light Mask vs N95/FFP2 Respirator required.
-- 🏃 **Outdoor Activity Alert:** Safe for outdoor cardio vs indoor workout replacement.
-- 👁️ **Eye & Mucous Membrane Protection:** Clear vs Wraparound glasses & lubricating drops for particulate sting.
+- **Live AQI and pollutants:** US AQI, PM2.5, PM10, O₃, NO₂, CO, plus temperature, humidity and wind (Open-Meteo API, no key needed).
+- **Best time to go out:** scans the next 24 hours and shows the cleanest and the riskiest windows.
+- **Four actionable alerts:** windows (open or sealed), mask type, outdoor exercise, and eye protection.
+- **Health profiles:** Standard, Sensitive Groups, and Asthma/Respiratory, each with lower warning thresholds.
+- **Seasonal smoke-risk alert:** during October-November, when PM2.5 is 60 µg/m³ or higher, a banner explains likely stubble-smoke impact. *This is a rule-based estimate and does not use satellite fire data.*
+- **Saved locations, city search and GPS:** stored in the browser's `localStorage`.
+- **Day/night themes:** automatic or manual.
+- **Real email alerts through AWS** (see below).
 
-### 🩺 6. Health Sensitivity Profile
-- Select between:
-  - **Standard / Normal:** Standard EPA thresholds.
-  - **Sensitive Groups:** Early warning triggers for children, elderly, and pregnancy.
-  - **Asthma / Respiratory:** Hyper-protective mode with rescue inhaler alerts at lower AQI cutoffs.
+## How we use AWS
 
-### 🔥 7. Seasonal Crop Residue / Stubble Burning Alert
-- Triggers automatically during **October – November** when **PM2.5 $\ge 60$ $\mu g/m^3$**.
-- Explains regional farm stubble burning, atmospheric autumn thermal inversion lids, and particulate health hazards.
-- Includes a test preview toggle to demonstrate the banner anytime.
+| AWS service | What it does in this project |
+|---|---|
+| **AWS Amplify Hosting** | Hosts the React app and rebuilds it automatically on every push to `main`. |
+| **AWS Lambda** | `lambda/aqi-alert/index.mjs` fetches Delhi's current AQI from Open-Meteo and checks it against a threshold. |
+| **Amazon EventBridge** | Triggers the Lambda function on a schedule (every hour). |
+| **Amazon SNS** | Sends an email alert to subscribers when AQI crosses the threshold. |
 
-### 🔌 8. Smart Air Purifier Control (Simulated IoT)
-- Sleek connected appliance card: **AeroShield Pro 450 (Living Room)**.
-- **On / Off Power Switch** with glowing aura.
-- Fan Speeds: *Quiet*, *Auto*, *Medium*, *Turbo CADR (450 $m^3/h$)*.
-- **Dynamic Indoor PM2.5 Counter:** Drops down to pristine levels ($8–12$ $\mu g/m^3$) when purifier runs, or slowly rises if turned off!
-- **True HEPA H13 Filter Health Bar:** Remaining lifespan tracker.
-- **Auto-Clean Trigger:** Automatically kicks purifier into Turbo when outdoor air spikes.
+**Flow:** EventBridge (schedule) → Lambda (fetch and check AQI) → SNS (email alert)
 
-### 🔔 9. Push Notifications Simulation (In-App Alert Cards)
-- Notification Bell with unread counter badge.
-- Floating in-app toast cards when alerts trigger.
-- Notification Center drawer with test buttons to trigger on-demand:
-  - `+ AQI Spike Warning`
-  - `+ Crop Smoke Alert`
-  - `+ Clean Window Alert`
+## Honest notes
 
----
+- The **smart air purifier card** and the **in-app notification center test buttons** are **demo-only simulations** to show how the app could connect to smart-home devices later. They are not connected to real hardware or AWS IoT.
+- Smoke-risk detection is based on season and PM2.5, not live fire data.
+- Not medical advice.
 
-## 🛠️ Tech Stack
+## AI tools used
 
-- **Framework:** React 19 + Vite
-- **Styling:** Tailwind CSS v4 with custom glassmorphism and theme transitions
-- **Icons:** Lucide React
-- **Data Source:** [Open-Meteo Air Quality & Weather API](https://open-meteo.com) (100% Free, No signup, No API keys)
-- **Hosting Target:** AWS Amplify Hosting
+This project was built with the help of **Google Antigravity** and **Claude** (AI coding assistants) for writing, debugging and setting up AWS services.
 
----
+## Tech stack
 
-## 📦 Local Setup & Development
+- React 19 + Vite
+- Tailwind CSS v4
+- Lucide React icons
+- Open-Meteo Air Quality & Weather API (free, no key)
+- AWS Amplify, Lambda, EventBridge, SNS
+
+## Run locally
 
 ```bash
-# 1. Clone repository
-git clone https://github.com/YOUR_USERNAME/aero-weather-aqi.git
+git clone https://github.com/atharvsharmaa70-ux/aero-weather-aqi.git
 cd aero-weather-aqi
-
-# 2. Install dependencies
 npm install
-
-# 3. Start development server
 npm run dev
-
-# 4. Build for production
-npm run build
 ```
 
----
+Build for production: `npm run build`
 
-## ☁️ 3-Minute Deployment to AWS Amplify Hosting
+## Deploy to AWS Amplify
 
-1. **Commit and push to GitHub:**
-   ```bash
-   git init
-   git add .
-   git commit -m "feat: complete AeroWeather app"
-   git branch -M main
-   git remote add origin https://github.com/YOUR_USERNAME/aero-weather-aqi.git
-   git push -u origin main
-   ```
+1. Push the repo to GitHub.
+2. In the AWS Amplify Console, choose **Host web app** → **GitHub** and select this repo and the `main` branch.
+3. Amplify detects the build settings automatically. Click **Save and deploy**.
 
-2. **Open AWS Amplify Console:**
-   - Go to [AWS Amplify Console](https://console.aws.amazon.com/amplify).
-   - Click **Host web app** > Select **GitHub**.
-   - Authorize AWS and select the `aero-weather-aqi` repository and `main` branch.
+## Set up the alert backend
 
-3. **Deploy:**
-   - AWS Amplify automatically detects the included [`amplify.yml`](./amplify.yml).
-   - Click **Save and deploy**.
-   - Your live HTTPS URL will be online in ~90 seconds!
+1. Create an SNS topic and subscribe your email.
+2. Create a Lambda function (Node.js 22.x) with the code from `lambda/aqi-alert/index.mjs`.
+3. Set the environment variables `TOPIC_ARN` and `AQI_THRESHOLD` (default 150).
+4. Give the Lambda role permission for `sns:Publish` on the topic.
+5. Add an EventBridge schedule trigger, for example `rate(1 hour)`.
 
----
+## What's next
 
-## 📄 License
+- Use NASA FIRMS satellite fire data for real stubble-burn detection.
+- Store AQI history in DynamoDB to show trends.
+- Add SMS and WhatsApp alerts and Hindi language support.
 
-MIT Open Source License.
+## Credits
+
+- Air quality and weather data: [Open-Meteo](https://open-meteo.com)
+- Icons: [Lucide](https://lucide.dev)
